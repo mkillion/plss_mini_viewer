@@ -4,9 +4,8 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <link rel="stylesheet" href="http://js.arcgis.com/3.11/esri/css/esri.css">
-    <link rel="stylesheet" href="http://js.arcgis.com/3.11/dijit/themes/claro/claro.css">
-    <script src="http://js.arcgis.com/3.11compact/"></script>
+    <link rel="stylesheet" href="https://js.arcgis.com/4.6/esri/css/main.css">
+    <script src="https://js.arcgis.com/4.6/"></script>
     <script src="main.js"></script>
 
     <style>
@@ -16,67 +15,14 @@
             padding: 0
         }
 
-        .ctrl {
-            margin: 5px
-        }
-
-        .esriScalebar {
-            left: 23px;
-            position: absolute;
-            top: 460px
-        }
-
-        #filter {
-            margin-left: 65px
-        }
-
         #map-div {
-            border: solid;
-            height: 500px;
-            margin: 5px;
-            width: 800px
+            height: 250px;
+            width: 350px
         }
     </style>
 </head>
 
-<body class="claro">
+<body>
     <div id="map-div"></div>
-    <div id="filter">
-        <div style="text-align:left;font:normal normal normal 12px arial">
-            Year:
-            <select name="year" id="year" class="ctrl">
-                <option value="all" selected>All</option>
-                <option value="2017">2017</option>
-                <option value="2016">2016</option>
-                <option value="2015">2015</option>
-                <option value="2014">2014</option>
-                <option value="2013">2013</option>
-            </select>
-            Magnitude:
-            <select name="mag" id="mag" class="ctrl">
-                <option value="all" selected>All</option>
-                <option value="2">2.0+</option>
-                <option value="3">3.0+</option>
-                <option value="4">4.0+</option>
-            </select>
-            <input type="button" onclick="filterQuakes(dojo.byId('year').value,dojo.byId('mag').value);" value="Go" />
-            <br />
-            <span class="ctrl">OR</span>
-            Show all earthquakes
-            <select name="days" id="days" class="ctrl">
-                <option value="7" selected>in the last week</option>
-                <option value="14">in the last two weeks</option></option>
-                <option value="30">in the last month</option>
-                <option value="all">since 2013</option>
-            </select>
-            <input type="button" class="ctrl" onclick="filterQuakesDays(dojo.byId('days').value)" value="Go"/>
-            <br />
-            <span class="ctrl">OR</span>
-            <input type="button" class="ctrl" onclick="filterQuakesRecent();" value="Show Last Event in Kansas" />
-            <br />
-            <input type="button" class="ctrl" onclick="clearQuakeFilter()" value="Reset" />
-            </p>
-        </div>
-    </div>
 </body>
 </html>
