@@ -82,12 +82,15 @@ function(
         switch (dat) {
             case "27":
                 var wkid = 4267;
+                var transWkid = 1175;
                 break;
             case "83":
                 var wkid = 4269;
+                var transWkid = 1188;
                 break;
             case "84":
                 var wkid = 4326;
+                var transWkid;
                 break;
         }
 
@@ -107,7 +110,11 @@ function(
             geometries: [pt],
             outSpatialReference: new SpatialReference( {
                 wkid: 3857
-            } )
+            } ),
+            transformation: {
+                wkid: transWkid
+            },
+            transformForward: true
         } );
 
         gs.project(projParams).then(function(response) {
