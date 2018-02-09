@@ -72,6 +72,7 @@ function(
         findParams.searchText = "S" + sec + "-T" + twn + "-R" + rng;
         findTask.execute(findParams).then(function(response) {
             view.extent = response.results[0].feature.geometry.extent;
+            view.zoom = 13;
             plotPoint(lat, lon, dat);
         } );
     }
