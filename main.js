@@ -10,6 +10,9 @@ require( [
     "esri/geometry/Point",
     "esri/geometry/SpatialReference",
     "esri/tasks/support/ProjectParameters",
+    "esri/layers/GraphicsLayer",
+    "esri/Graphic",
+    "esri/symbols/SimpleMarkerSymbol",
     "dojo/domReady!"
 ],
 function(
@@ -22,13 +25,17 @@ function(
     GeometryService,
     Point,
     SpatialReference,
-    ProjectParameters
+    ProjectParameters,
+    GraphicsLayer,
+    Graphic,
+    SimpleMarkerSymbol
 ) {
     var plssLayer = new TileLayer( {url:"http://services.kgs.ku.edu/arcgis8/rest/services/plss/plss/MapServer", id:"Section-Township-Range"} );
 	var topoLayer = new TileLayer( {url:"https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer", id:"Topo"} );
+    var graphicsLayer = new GraphicsLayer();
 
     var map = new Map( {
-        layers: [topoLayer, plssLayer]
+        layers: [topoLayer, plssLayer, graphicsLayer]
     } );
 
     var view = new MapView( {
@@ -52,15 +59,14 @@ function(
             var lat = items[0].substring(4);
             var lon = items[1].substring(4);
             var dat = items[2].substring(4);
-            var twn = items[3].substring(2);
-            var rng = items[4].substring(2);
-            var sec = items[5].substring(2);
+            var twn = items[3].substring(4);
+            var rng = items[4].substring(4);
+            var sec = items[5].substring(4);
         }
 
         var findTask = new FindTask("http://services.kgs.ku.edu/arcgis8/rest/services/plss/plss/MapServer");
         var findParams = new FindParameters();
     	findParams.returnGeometry = true;
-        findParams.contains = false;
         findParams.layerIds = [3];
         findParams.searchFields = ["S_R_T"];
         findParams.searchText = "S" + sec + "-T" + twn + "-R" + rng;
@@ -95,14 +101,27 @@ function(
         var gs = new GeometryService( {
             url: "http://services.kgs.ku.edu/arcgis8/rest/services/Utilities/Geometry/GeometryServer"
         } );
-        var pp = new ProjectParameters( {
-            geometries: pt,
-            outSpatialReference: 3857
+
+        var projParams = new ProjectParameters( {
+            geometries: [pt],
+            outSpatialReference: new SpatialReference( {
+                wkid: 3857
+            } )
         } );
-        console.log(pp);
-        gs.project(pp).then(function(geom) {
-            console.log("bar");
-            console.log(geom);
+
+        gs.project(projParams).then(function(response) {
+            var symbol = {
+                type: "simple-marker",
+                style: "circle",
+                color: "blue",
+                size: "12px",
+            };
+
+            wmPt = new Graphic ( {
+				geometry: response[0],
+				symbol: symbol
+			} );
+            graphicsLayer.add(wmPt);
         } );
     }
 } );
