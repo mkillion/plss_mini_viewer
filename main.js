@@ -30,6 +30,9 @@ function(
     Graphic,
     SimpleMarkerSymbol
 ) {
+    var wmSR = new SpatialReference( {
+        wkid: 3857
+    } );
     var plssLayer = new TileLayer( {url:"http://services.kgs.ku.edu/arcgis8/rest/services/plss/plss/MapServer", id:"Section-Township-Range"} );
 	var topoLayer = new TileLayer( {url:"https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer", id:"Topo"} );
     var graphicsLayer = new GraphicsLayer();
@@ -48,37 +51,18 @@ function(
     } );
 
     view.when(function() {
-        urlParams = location.search.substr(1);
-        urlZoom(urlParams);
-    } );
-
-
-    function urlZoom(params) {
-        var items = urlParams.split("&");
+        var items = location.search.substr(1).split("&");
         if (items.length > 1) {
             var lat = items[0].substring(4);
             var lon = items[1].substring(4);
             var dat = items[2].substring(4);
-            var twn = items[3].substring(4);
-            var rng = items[4].substring(4);
-            var sec = items[5].substring(4);
+            var lod = items[3].substring(4);
         }
-
-        var findTask = new FindTask("http://services.kgs.ku.edu/arcgis8/rest/services/plss/plss/MapServer");
-        var findParams = new FindParameters();
-    	findParams.returnGeometry = true;
-        findParams.layerIds = [3];
-        findParams.searchFields = ["S_R_T"];
-        findParams.searchText = "S" + sec + "-T" + twn + "-R" + rng;
-        findTask.execute(findParams).then(function(response) {
-            view.extent = response.results[0].feature.geometry.extent;
-            view.zoom = 13;
-            plotPoint(lat, lon, dat);
-        } );
-    }
+        plotPoint(lat, lon, dat, lod);
+    } );
 
 
-    function plotPoint(lat, lon, dat) {
+    function plotPoint(lat, lon, dat, lod) {
         switch (dat) {
             case "27":
                 var wkid = 4267;
@@ -108,9 +92,7 @@ function(
 
         var projParams = new ProjectParameters( {
             geometries: [pt],
-            outSpatialReference: new SpatialReference( {
-                wkid: 3857
-            } ),
+            outSpatialReference: wmSR,
             transformation: {
                 wkid: transWkid
             },
@@ -118,6 +100,12 @@ function(
         } );
 
         gs.project(projParams).then(function(response) {
+            wmPt = new Point( {
+                x: response[0].x,
+                y: response[0].y,
+                spatialReference: wmSR
+            } );
+
             var symbol = {
                 type: "simple-marker",
                 style: "circle",
@@ -125,11 +113,14 @@ function(
                 size: "12px",
             };
 
-            wmPt = new Graphic ( {
-				geometry: response[0],
+            var g = new Graphic ( {
+				geometry: wmPt,
 				symbol: symbol
 			} );
-            graphicsLayer.add(wmPt);
+
+            view.center = wmPt;
+            view.zoom = lod;
+            graphicsLayer.add(g);
         } );
     }
 } );
