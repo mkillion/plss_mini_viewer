@@ -57,14 +57,7 @@ function(
             var lon = items[1].substring(4);
             var dat = items[2].substring(4);
             var lod = items[3].substring(4);
-            if (items.length > 4) {
-                if (items[4].substring(5) === "false") {
-                    plssLayer.visible = false;
-                }
-            }
-
         }
-
         plotPoint(lat, lon, dat, lod);
     } );
 
