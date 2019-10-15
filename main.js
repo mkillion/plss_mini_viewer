@@ -33,7 +33,7 @@ function(
     var wmSR = new SpatialReference( {
         wkid: 3857
     } );
-    var plssLayer = new TileLayer( {url:"http://services.kgs.ku.edu/arcgis8/rest/services/plss/plss/MapServer", id:"Section-Township-Range"} );
+    var plssLayer = new TileLayer( {url:"http://services.kgs.ku.edu/arcgis8/rest/services/plss/plss_anno_labels/MapServer, id:"Section-Township-Range"} );
 	var topoLayer = new TileLayer( {url:"https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer", id:"Topo"} );
     var graphicsLayer = new GraphicsLayer();
 
